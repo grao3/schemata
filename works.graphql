@@ -1,0 +1,75 @@
+query WorkSummaryQuery($inclusionFilter: WorkFilter, $exclusionFilter: WorkFilter)
+{
+    tags: TagFilter,
+    languages: [Language],
+    wordCount: WordCountCriteria,
+    published: publicationCriteria,
+}
+
+type publicationCriteria{
+  
+}
+
+type WordCountCriteria{
+    wordMinimum: Int,
+    wordMaximum: Int
+}
+
+enum Language{
+	ENGLISH,
+	SPANISH,
+	FRENCH,
+}
+
+"""
+Consider: Adding Tags, Authors, Editors, Curators, Work types, a related works object? Feedback object?
+ revise [Tag!] into a paginated connection obj?
+"""
+interface Work{
+	id: ID!
+    languages: [Language!]!
+    publicationHistory: publicationHistoryConnection
+    summary: WorkSummary
+}
+
+
+"""
+I am unsure if this sould exist at the schema layer
+"""
+type WorkSummary{
+    teaser: String
+    teaserImageSource: String
+    tags: [Tag!]
+    published: Date
+    wordCount: Int
+    updated(includeRevisions: Boolean): Date
+}
+
+""" A chaptered story, """
+type Story implements Work {
+    id: ID!
+    languages: [Language!]!
+    summary: WorkSummary
+    authors: [User!]!
+}
+
+"""
+Does this type need to exist? Or can it be modeled as a story with 1 chapter?
+"""
+type OneShot implements Work {
+    id: ID!
+    languages: [Language!]!
+    summary: WorkSummary
+    authors: [User!]!
+}
+
+
+""" Several individual one-shots cobbled together"""
+type Anthology implements Work {
+    id: ID!
+    languages: [Language!]!
+    summary: WorkSummary
+    editors: [User!]
+}
+
+

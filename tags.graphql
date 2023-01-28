@@ -1,0 +1,30 @@
+# Get super-tags
+# Get more specific tags
+# Propose new super-tag relationship
+type Tag
+{
+    text: String! 
+    index: Index 
+}
+
+type CharacterTag{
+
+}
+
+type ShipTag{
+    
+}
+
+#I'm very dubious about this type: it exists to allow a many-to-one mapping from tags to indices
+# (see, e.g., Pom's tagging habits for a use case), but introducing a type to allow less information density in
+# data being sent back and forth (because we're admitting tag-cruft) seems potentially dicey
+type TagGroup
+{
+    tags: [Tag]! @notEmpty
+}
+
+type Index{
+    id: ID!
+    canonicalName(language: Language): String! 
+}
+
