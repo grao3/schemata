@@ -4,5 +4,6 @@ GraphQL Archive of our Own (abbreviated _GRAO3_, preferred pronunciation "gray-o
 But even if the point of this project is purely educational, I still want to give GAO3 the best possible user experience. If you see a bug or have a suggestion, please feel free to open an issue in the appropriate repository. Currently, this project is spread across
 
 
-- **[grao3/schemata]**, this repository, which contains definitions of the types and queries in the archive's graphql API.
 
+- **[grao3/schemata]**, this repository, which contains definitions of the types and queries in the archive's graphql API.
+- **[grao3/.github](https://github.com/grao3/.github)**, used to maintain the github page, and to track issues that affect multiple other repositories. If you have a high-level feature request, this is the place to open it. 
