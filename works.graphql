@@ -1,75 +1,83 @@
-query WorkSummaryQuery($inclusionFilter: WorkFilter, $exclusionFilter: WorkFilter)
-{
-    tags: TagFilter,
-    languages: [Language],
-    wordCount: WordCountCriteria,
-    published: publicationCriteria,
-}
-
-type publicationCriteria{
-  
-}
-
-type WordCountCriteria{
-    wordMinimum: Int,
-    wordMaximum: Int
-}
+scalar HTML
+scalar Date
 
 enum Language{
-	ENGLISH,
-	SPANISH,
-	FRENCH,
+	ENGLISH
+	SPANISH
+	FRENCH
+    TAGALOG
+    "[...]"
 }
 
 """
 Consider: Adding Tags, Authors, Editors, Curators, Work types, a related works object? Feedback object?
- revise [Tag!] into a paginated connection obj?
+revise [Tag!] into a paginated connection obj?
 """
 interface Work{
 	id: ID!
     languages: [Language!]!
-    publicationHistory: publicationHistoryConnection
-    summary: WorkSummary
-}
-
-
-"""
-I am unsure if this sould exist at the schema layer
-"""
-type WorkSummary{
-    teaser: String
+    teaser: HTML
     teaserImageSource: String
-    tags: [Tag!]
     published: Date
-    wordCount: Int
-    updated(includeRevisions: Boolean): Date
+    updated: Date
+    wordCount: Int    
 }
 
-""" A chaptered story, """
+"""
+A chaptered story-- i.e., a work with subdivisions where the order provides continuity information.
+This is maybe also usable for longer series but
+then you'll need to figure out how to ensure the order of works
+matches the order the author intends. 
+"""
 type Story implements Work {
+    authors: [User!]!
+    # One possibility here is to define chapters as some kind of linked list to allow nesting:
+    # e.g., universe > series > story > chapter."""
+    chapters: [Work!]
+    
+    #shared Work fields
     id: ID!
     languages: [Language!]!
-    summary: WorkSummary
-    authors: [User!]!
+    teaser: HTML
+    teaserImageSource: String
+    published: Date
+    updated: Date
+    wordCount: Int
 }
 
 """
-Does this type need to exist? Or can it be modeled as a story with 1 chapter?
+A single story without chapters.
 """
 type OneShot implements Work {
+    authors: [User!]!
+    text: HTML!
+    
+    #shared Work fields
     id: ID!
     languages: [Language!]!
-    summary: WorkSummary
-    authors: [User!]!
+    teaser: HTML
+    teaserImageSource: String
+    published: Date
+    updated: Date
+    wordCount: Int
+
 }
 
-
-""" Several individual one-shots cobbled together"""
+"""
+An anthology-- i.e., a work with subdivisions where the order doesn't provide continuity information
+"""
 type Anthology implements Work {
+    editors: [User!]
+    chapters: [Work!]
+    
+    #shared Work fields
     id: ID!
     languages: [Language!]!
-    summary: WorkSummary
-    editors: [User!]
+    teaser: HTML
+    teaserImageSource: String
+    published: Date
+    updated: Date
+    wordCount: Int
 }
 
 
